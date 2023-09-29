@@ -8,24 +8,24 @@ pipeline {
                 }
             }
             steps {
-                sh 'python -m py_compile pythoncode/add2vals.py pythoncode/calc.py'
-                stash(name: 'compiled-results', includes: 'pythoncode/*.py*')
+                sh 'python -m py_compile ./add2vals.py ./calc.py'
+                stash(name: 'compiled-results', includes: './*.py*')
                 sh 'ls -l pythoncode'
             }
         }
-        stage('Test') { 
+        stage('Test') {
             agent {
                 docker {
-                    image 'qnib/pytest' 
+                    image 'qnib/pytest'
                 }
             }
             steps {
-                sh 'py.test --junit-xml test-reports/results.xml pythoncode/test_calc.py' 
+                sh 'py.test --junit-xml test-reports/results.xml ./test_calc.py'
                 sh 'cat test-reports/results.xml'
             }
             post {
                 always {
-                    junit 'test-reports/results.xml' 
+                    junit 'test-reports/results.xml'
                 }
             }
         }
